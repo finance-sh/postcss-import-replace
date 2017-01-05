@@ -1,0 +1,17 @@
+{
+  "name": "postcss-import-replace",
+  "version": "1.0.1",
+  "description": "import-replace-path",
+  "main": "index.js",
+  "scripts": {
+    "test": ""
+  },
+  "author": "oilchris",
+  "license": "ISC",
+  "devDependencies": {
+    "chalk": "^1.1.3",
+    "fs-extra": "^1.0.0",
+    "object-assign": "^4.1.0",
+    "postcss": "^5.2.8"
+  }
+}
