@@ -1,6 +1,6 @@
 {
   "name": "postcss-import-replace",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "import-replace-path",
   "main": "index.js",
   "scripts": {

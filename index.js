@@ -9,33 +9,40 @@ var fs = require('fs-extra');
 var assign = require("object-assign");
 var node_modules_path = path.resolve(path.resolve(__dirname),'../');
 
-module.exports = postcss.plugin('postcss-replace-path', function (options) {
+module.exports = postcss.plugin('postcss-import-replace', function (options) {
+
     options = assign({
         deltaFile:   './react-deltaui/src/components/Delta/lib/variables.duss',
         path     :   '../..'
     }, options);
-    var file = path.resolve(node_modules_path, options.deltaFile);
 
-    function writeFile (content) {
+    var file = path.resolve(node_modules_path, options.deltaFile);
+    var flag = '/* end */';
+
+    var writeFile = function (content) {
         fs.outputFile(file, content, function (err) {
-            console.log(chalk.green.bold('[postcss-replace-path-write失败信息] ') + err);
+            console.log(chalk.green.bold('[writeFile]') + err);
         });
+    };
+
+    var replaceFile = function(data) {
+        var _data =  data.replace(/\"..\/..\/DeltaVariable/g, '"' + options.path + '/DeltaVariable');
+        return flag.concat('\n' + _data);
     }
-    function readFile () {
-        return new Promise(function (resolve, reject){
-            fs.readFile(file, 'utf8', function (err, data) {
-                // console.log(chalk.green.bold('[readFile_data] ') + data);
-                var _data = data.replace(/\"..\/..\/DeltaVariable/g, '"' + options.path + '/DeltaVariable');
-                if(!err) {
-                    resolve(_data);
-                } else {
-                    reject();                     
-                }
-            });
-        });
-    }
-    readFile().then(function(data){
-        writeFile(data);
-    });
+
+    var readFile = function () {
+        var data = fs.readFileSync(file, 'utf8');
+        var _data;
+        if(data.indexOf(flag) >= 0) {
+            return
+        } else {        
+            _data = replaceFile(data);
+            writeFile(_data);
+        }
+    };
+
+    readFile();
+
     return function (root, result) {};
+
 });
